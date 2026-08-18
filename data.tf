@@ -60,6 +60,7 @@ data "aws_iam_policy_document" "mp3_bucket_policy" {
 
     actions = [
       "s3:GetObject",
+      "s3:PutObject",
     ]
 
     resources = [
