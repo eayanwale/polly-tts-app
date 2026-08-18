@@ -49,7 +49,6 @@ def lambda_handler(event, context):
 
     s3 = boto3.client('s3')
     s3.upload_file('/tmp/' + postId, os.environ['BUCKET_NAME'], postId + ".mp3")
-    s3.put_object_acl(ACL='public-read', Bucket=os.environ['BUCKET_NAME'], Key=postId + ".mp3")
 
     location = s3.get_bucket_location(Bucket=os.environ['BUCKET_NAME'])
     region = location['LocationConstraint']

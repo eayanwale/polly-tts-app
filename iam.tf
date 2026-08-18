@@ -31,7 +31,6 @@ resource "aws_iam_policy" "lambda_policy_for_polly" {
           "dynamodb:UpdateItem",
           "sns:Publish",
           "s3:PutObject",
-          "s3:PutObjectAcl",
           "s3:GetBucketLocation",
           "logs:CreateLogGroup",
           "logs:CreateLogStream",

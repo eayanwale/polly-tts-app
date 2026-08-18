@@ -48,6 +48,26 @@ data "aws_iam_policy_document" "origin_bucket_policy" {
   }
 }
 
+data "aws_iam_policy_document" "mp3_bucket_policy" {
+  statement {
+    sid    = "PublicReadGetObject"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "${aws_s3_bucket.mp3_bucket.arn}/*",
+    ]
+  }
+}
+
 data "aws_acm_certificate" "my_domain" {
   region   = "us-east-1"
   domain   = "*.${local.my_domain}"

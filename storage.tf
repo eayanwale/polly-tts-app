@@ -22,16 +22,6 @@ resource "aws_s3_bucket_public_access_block" "website_bucket" {
   restrict_public_buckets = false
 }
 
-resource "aws_s3_bucket_acl" "website_bucket" {
-  bucket = aws_s3_bucket.website_bucket.id
-  acl    = "public-read"
-
-  depends_on = [
-    aws_s3_bucket_ownership_controls.website_bucket,
-    aws_s3_bucket_public_access_block.website_bucket,
-  ]
-}
-
 resource "aws_s3_bucket_website_configuration" "website_bucket" {
   bucket = aws_s3_bucket.website_bucket.id
 
@@ -101,12 +91,9 @@ resource "aws_s3_bucket_public_access_block" "mp3_bucket" {
   restrict_public_buckets = false
 }
 
-resource "aws_s3_bucket_acl" "mp3_bucket" {
+resource "aws_s3_bucket_policy" "mp3_bucket" {
   bucket = aws_s3_bucket.mp3_bucket.id
-  acl    = "public-read"
+  policy = data.aws_iam_policy_document.mp3_bucket_policy.json
 
-  depends_on = [
-    aws_s3_bucket_ownership_controls.mp3_bucket,
-    aws_s3_bucket_public_access_block.mp3_bucket,
-  ]
+  depends_on = [aws_s3_bucket_public_access_block.mp3_bucket]
 }
