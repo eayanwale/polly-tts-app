@@ -185,7 +185,7 @@ Build: (${env.BUILD_URL})
                 terraform apply -auto-approve tfplan
                 '''
                 script {
-                    def clixxAsgUrl = sh(script: 'terraform output -raw clixx_asg_url', returnStdout: true).trim()
+                    def clixxTtsUrl = sh(script: 'terraform output -raw clixx_tts_url', returnStdout: true).trim()
 
                     slackSend (
                         color: '#36a64f',
@@ -194,8 +194,8 @@ Build: (${env.BUILD_URL})
 Runner: ${runner}
 Job: '${env.JOB_BASE_NAME} [${env.BUILD_NUMBER}]'
 
-Clixx ASG URL:
-    ${clixxAsgUrl}
+Clixx TTS URL:
+    ${clixxTtsUrl}
 """
                     )
                 }

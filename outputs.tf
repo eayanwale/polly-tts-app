@@ -13,3 +13,7 @@ output "mp3_bucket_name" {
 output "dynamodb_table_name" {
   value = aws_dynamodb_table.posts.name
 }
+
+output "clixx_tts_url" {
+  value = "https://${aws_route53_record.tts-clixx-subdomain.name}.${data.aws_route53_zone.root-domain.name}"
+}
