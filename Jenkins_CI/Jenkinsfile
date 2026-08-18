@@ -36,8 +36,8 @@ pipeline {
                 script {
                     sh 'rm -f secrets_found.log syntax_issues_found.log'
 
-                    def promptFile = 'Jenkins CI/ai-source-audit-prompt.txt'
-                    def fixPromptFile = 'Jenkins CI/ai-source-audit-fix-prompt.txt'
+                    def promptFile = 'Jenkins_CI/ai-source-audit-prompt.txt'
+                    def fixPromptFile = 'Jenkins_CI/ai-source-audit-fix-prompt.txt'
 
                     if (fileExists(promptFile)) {
                         claudePrompt = readFile(file: promptFile, encoding: 'UTF-8').trim()
