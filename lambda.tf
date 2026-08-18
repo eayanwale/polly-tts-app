@@ -21,6 +21,7 @@ resource "aws_lambda_function" "new_posts" {
   role             = aws_iam_role.lambda_role_for_polly.arn
   handler          = "index.lambda_handler"
   runtime          = var.lambda_runtime
+  timeout          = 10
   filename         = data.archive_file.new_posts.output_path
   source_code_hash = data.archive_file.new_posts.output_base64sha256
 
