@@ -57,13 +57,19 @@ resource "aws_s3_object" "styles_css" {
   content_type = "text/css"
 }
 
+locals {
+  scripts_js_vars = {
+    api_endpoint       = aws_api_gateway_stage.dev.invoke_url
+    cognito_login_url  = "https://${aws_cognito_user_pool_domain.clixx_polly.domain}.auth.${var.AWS_REGION}.amazoncognito.com/login?client_id=${aws_cognito_user_pool_client.clixx_polly_web.id}&response_type=token&scope=openid+email&redirect_uri=${urlencode(local.site_url)}"
+    cognito_logout_url = "https://${aws_cognito_user_pool_domain.clixx_polly.domain}.auth.${var.AWS_REGION}.amazoncognito.com/logout?client_id=${aws_cognito_user_pool_client.clixx_polly_web.id}&logout_uri=${urlencode(local.site_url)}"
+  }
+}
+
 resource "aws_s3_object" "scripts_js" {
-  bucket = aws_s3_bucket.website_bucket.id
-  key    = "scripts.js"
-  content = templatefile("${path.module}/templates/scripts.js.tftpl", {
-    api_endpoint = aws_api_gateway_stage.dev.invoke_url
-  })
-  etag         = md5(templatefile("${path.module}/templates/scripts.js.tftpl", { api_endpoint = aws_api_gateway_stage.dev.invoke_url }))
+  bucket       = aws_s3_bucket.website_bucket.id
+  key          = "scripts.js"
+  content      = templatefile("${path.module}/templates/scripts.js.tftpl", local.scripts_js_vars)
+  etag         = md5(templatefile("${path.module}/templates/scripts.js.tftpl", local.scripts_js_vars))
   content_type = "application/javascript"
 }
 
