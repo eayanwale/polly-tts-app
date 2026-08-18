@@ -7,4 +7,5 @@ locals {
   sns_topic_name      = "new_posts"
   my_domain           = "clixx.example.com"
   s3_origin_id        = "myS3Origin"
+  site_url            = "https://tts.${local.my_domain}/"
 }

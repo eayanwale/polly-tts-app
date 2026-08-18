@@ -1,4 +1,28 @@
 var API_ENDPOINT = "${api_endpoint}"
+var COGNITO_LOGIN_URL = "${cognito_login_url}"
+var COGNITO_LOGOUT_URL = "${cognito_logout_url}"
+
+function getIdToken() {
+    return sessionStorage.getItem("id_token");
+}
+
+// Hosted UI redirects back here with the tokens in the URL fragment
+(function captureTokenFromRedirect() {
+    var match = window.location.hash.match(/id_token=([^&]+)/);
+    if (match) {
+        sessionStorage.setItem("id_token", match[1]);
+        history.replaceState(null, "", window.location.pathname);
+    }
+})();
+
+if (!getIdToken()) {
+    window.location.href = COGNITO_LOGIN_URL;
+}
+
+document.getElementById("logoutButton").onclick = function () {
+    sessionStorage.removeItem("id_token");
+    window.location.href = COGNITO_LOGOUT_URL;
+}
 
 document.getElementById("sayButton").onclick = function(){
     var inputData = {
@@ -10,6 +34,7 @@ document.getElementById("sayButton").onclick = function(){
         type: 'POST',
         data: JSON.stringify(inputData) ,
         contentType: 'application/json; charset=utf-8',
+        headers: { "Authorization": getIdToken() },
         success: function (response) {
             document.getElementById("postIDreturned").textContent="Post ID: " + response;
         },
@@ -24,6 +49,7 @@ document.getElementById("searchButton").onclick = function(){
     $.ajax({
         url: API_ENDPOINT + '?postId='+postId,
         type: 'GET',
+        headers: { "Authorization": getIdToken() },
         success: function (response) {
             $('#posts tr').slice(1).remove();
             jQuery.each(response, function(i,data) {
