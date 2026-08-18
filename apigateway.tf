@@ -116,7 +116,7 @@ resource "aws_api_gateway_integration_response" "new_post_200" {
   }
 
   response_templates = {
-    "application/json" = "$input.path('$')"
+    "application/json" = "\"$input.path('$')\""
   }
 
   depends_on = [aws_api_gateway_integration.new_post]
@@ -175,10 +175,13 @@ resource "aws_api_gateway_deployment" "post_reader_api" {
     redeployment = sha1(jsonencode([
       aws_api_gateway_method.get_posts.id,
       aws_api_gateway_integration.get_posts.id,
+      aws_api_gateway_integration_response.get_posts_200.id,
       aws_api_gateway_method.new_post.id,
       aws_api_gateway_integration.new_post.id,
+      aws_api_gateway_integration_response.new_post_200.id,
       aws_api_gateway_method.options.id,
       aws_api_gateway_integration.options.id,
+      aws_api_gateway_integration_response.options_200.id,
     ]))
   }
 
