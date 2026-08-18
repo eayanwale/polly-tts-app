@@ -1,7 +1,7 @@
 ### Website bucket ###
 
 resource "aws_s3_bucket" "website_bucket" {
-  bucket = local.website_bucket_name
+  bucket        = local.website_bucket_name
   force_destroy = true
 }
 
@@ -46,37 +46,41 @@ resource "aws_s3_bucket_website_configuration" "website_bucket" {
 
 resource "aws_s3_bucket_policy" "website_bucket" {
   bucket = aws_s3_bucket.website_bucket.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "PublicReadGetObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = ["s3:GetObject"]
-        Resource  = ["${aws_s3_bucket.website_bucket.arn}/*"]
-      }
-    ]
-  })
+  policy = data.aws_iam_policy_document.origin_bucket_policy.json
 
   depends_on = [aws_s3_bucket_public_access_block.website_bucket]
 }
 
-resource "aws_s3_object" "website_files" {
-  for_each = fileset("${path.module}/website", "**")
-
+resource "aws_s3_object" "index_html" {
   bucket       = aws_s3_bucket.website_bucket.id
-  key          = each.value
-  source       = "${path.module}/website/${each.value}"
-  etag         = filemd5("${path.module}/website/${each.value}")
-  content_type = lookup(local.mime_types, regex("\\.[^.]+$", each.value), "application/octet-stream")
+  key          = "index.html"
+  source       = "${path.module}/website/index.html"
+  etag         = filemd5("${path.module}/website/index.html")
+  content_type = "text/html"
+}
+
+resource "aws_s3_object" "styles_css" {
+  bucket       = aws_s3_bucket.website_bucket.id
+  key          = "styles.css"
+  source       = "${path.module}/website/styles.css"
+  etag         = filemd5("${path.module}/website/styles.css")
+  content_type = "text/css"
+}
+
+resource "aws_s3_object" "scripts_js" {
+  bucket = aws_s3_bucket.website_bucket.id
+  key    = "scripts.js"
+  content = templatefile("${path.module}/templates/scripts.js.tftpl", {
+    api_endpoint = aws_api_gateway_stage.dev.invoke_url
+  })
+  etag         = md5(templatefile("${path.module}/templates/scripts.js.tftpl", { api_endpoint = aws_api_gateway_stage.dev.invoke_url }))
+  content_type = "application/javascript"
 }
 
 ### MP3 bucket ###
 
 resource "aws_s3_bucket" "mp3_bucket" {
-  bucket = local.mp3_bucket_name
+  bucket        = local.mp3_bucket_name
   force_destroy = true
 }
 
