@@ -165,7 +165,7 @@ Build: (${env.BUILD_URL})
 """
                 )
                 sh '''
-                terraform init -upgrade
+                terraform init -upgrade -reconfigure -input=false
                 '''
             }
         }
