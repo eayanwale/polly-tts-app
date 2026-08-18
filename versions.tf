@@ -3,7 +3,7 @@ terraform {
 
   backend "s3" {
     bucket  = "enoch-tf-state-bucket"
-    key     = "stack-aut-Clixx/terraform.tfstate"
+    key     = "stack-tts-Clixx/terraform.tfstate"
     region  = "us-east-1"
     profile = "stackprog-dev"
   }
